@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>鳥取便利屋 | お気軽にご相談ください</title>
+  <style>
+    /* =====================
+       基本設定
+    ===================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+      background-color: #FAFAF7;
+      color: #333333;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    /* =====================
+       ヘッダー
+    ===================== */
+    header {
+      background-color: #2E7D32;
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    header .logo {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    header .header-tel {
+      font-size: 22px;
+      font-weight: bold;
+      color: #FFE082;
+      text-decoration: none;
+    }
+
+    header .header-tel::before {
+      content: "📞 ";
+    }
+
+    /* =====================
+       ヒーローセクション
+    ===================== */
+    .hero {
+      position: relative;
+      width: 100%;
+      min-height: 420px;
+      background-color: #1565C0; /* hero-bg.jpg が入る箇所 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 20px;
+      overflow: hidden;
+    }
+
+    /* hero-bg.jpg を用意した場合は以下のコメントを外してください
+    .hero {
+      background-image: url('hero-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+    }
+    */
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      color: #ffffff;
+      font-weight: bold;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+      margin-bottom: 12px;
+      letter-spacing: 4px;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: #E3F2FD;
+      margin-bottom: 32px;
+    }
+
+    .hero .cta-btn {
+      background-color: #FFB300;
+      color: #222;
+      font-size: 22px;
+      font-weight: bold;
+      padding: 16px 48px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      transition: background 0.2s;
+      display: inline-block;
+    }
+
+    .hero .cta-btn:hover {
+      background-color: #FFA000;
+    }
+
+    /* =====================
+       お悩みセクション
+    ===================== */
+    .trouble-section {
+      padding: 60px 20px;
+      background: #F1F8E9;
+      text-align: center;
+    }
+
+    .trouble-section h2 {
+      font-size: 32px;
+      color: #2E7D32;
+      margin-bottom: 8px;
+    }
+
+    .trouble-section .subtitle {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 40px;
+    }
+
+    .trouble-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .trouble-card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 16px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 3px solid transparent;
+    }
+
+    .trouble-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      border-color: #2E7D32;
+    }
+
+    .trouble-card .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .trouble-card .label {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2E7D32;
+    }
+
+    .trouble-card img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    /* 画像の代替（青塗りつぶし） */
+    .img-placeholder {
+      width: 100%;
+      height: 90px;
+      background-color: #1565C0;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    /* =====================
+       モーダル（見積もり）
+    ===================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 20px;
+      padding: 36px 32px;
+      max-width: 560px;
+      width: 95%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal h3 {
+      font-size: 26px;
+      color: #2E7D32;
+      margin-bottom: 20px;
+      border-bottom: 3px solid #A5D6A7;
+      padding-bottom: 10px;
+    }
+
+    .modal label {
+      display: block;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 18px;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .modal select,
+    .modal input[type="text"],
+    .modal input[type="number"],
+    .modal textarea {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 18px;
+      border: 2px solid #A5D6A7;
+      border-radius: 10px;
+      background: #F9FBF9;
+      color: #333;
+    }
+
+    .modal textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    .estimate-result {
+      margin-top: 24px;
+      background: #E8F5E9;
+      border-radius: 12px;
+      padding: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #2E7D32;
+      text-align: center;
+      display: none;
+    }
+
+    .modal-btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .btn-estimate {
+      flex: 1;
+      background: #2E7D32;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-estimate:hover {
+      background: #1B5E20;
+    }
+
+    .btn-call {
+      flex: 1;
+      background: #FFB300;
+      color: #222;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.2s;
+      display: inline-block;
+    }
+
+    .btn-call:hover {
+      background: #FFA000;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 28px;
+      cursor: pointer;
+      color: #888;
+      background: none;
+      border: none;
+    }
+
+    /* =====================
+       実績セクション
+    ===================== */
+    .jisseki-section {
+      padding: 60px 20px;
+      background: #FFF8E1;
+      text-align: center;
+    }
+
+    .jisseki-section h2 {
+      font-size: 32px;
+      color: #E65100;
+      margin-bottom: 8px;
+    }
+
+    .jisseki-section .subtitle {
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    /* ── 投稿フォーム ── */
+    .jisseki-post-form {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 24px;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    .jisseki-post-form h3 {
+      font-size: 22px;
+      color: #E65100;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .jisseki-post-form label {
+      display: block;
+      font-size: 17px;
+      font-weight: bold;
+      margin-top: 14px;
+      margin-bottom: 5px;
+      color: #444;
+    }
+
+    .jisseki-post-form input[type="text"],
+    .jisseki-post-form input[type="number"],
+    .jisseki-post-form textarea,
+    .jisseki-post-form input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 17px;
+      border: 2px solid #FFCC80;
+      border-radius: 10px;
+      background: #FFFDE7;
+      color: #333;
+    }
+
+    .jisseki-post-form textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .btn-post {
+      margin-top: 20px;
+      width: 100%;
+      background: #E65100;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-post:hover {
+      background: #BF360C;
+    }
+
+    /* ── 実績カード ── */
+    .jisseki-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .jisseki-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    .jisseki-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    /* 実績カード画像プレースホルダー */
+    .jisseki-img-placeholder {
+      width: 100%;
+      height: 200px;
+      background-color: #1565C0;
+    }
+
+    .jisseki-card .card-body {
+      padding: 18px;
+    }
+
+    .jisseki-card .card-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2E7D32;
+      margin-bottom: 6px;
+    }
+
+    .jisseki-card .card-price {
+      font-size: 22px;
+      font-weight: bold;
+      color: #E65100;
+      margin-bottom: 8px;
+    }
+
+    .jisseki-card .card-desc {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .jisseki-card .card-date {
+      font-size: 14px;
+      color: #999;
+      margin-top: 8px;
+    }
+
+    /* =====================
+       フッター
+    ===================== */
+    footer {
+      background: #1B5E20;
+      color: #C8E6C9;
+      text-align: center;
+      padding: 32px 20px;
+      font-size: 16px;
+    }
+
+    footer .footer-tel {
+      font-size: 28px;
+      font-weight: bold;
+      color: #FFE082;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    footer .footer-tel::before {
+      content: "📞 ";
+    }
+
+    /* =====================
+       レスポンシブ
+    ===================== */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 28px; }
+      .trouble-section h2 { font-size: 24px; }
+      .modal { padding: 24px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- =====================
+     ヘッダー
+===================== -->
+<header>
+  <div class="logo">🌿 鳥取便利屋</div>
+  <a href="tel:0857-XX-XXXX" class="header-tel">0857-XX-XXXX</a>
+</header>
+
+
+<!-- =====================
+     ヒーロー
+===================== -->
+<section class="hero">
+  <!-- hero-bg.jpg ： 鳥取の風景や作業中のスタッフ画像 -->
+  <div class="hero-content">
+    <h1>どんなお困りごとも<br>おまかせください</h1>
+    <p>鳥取で地域密着・丁寧対応の便利屋です</p>
+    <a href="#trouble" class="cta-btn">お悩みを選ぶ ▼</a>
+  </div>
+</section>
+
+
+<!-- =====================
+     お悩み選択セクション
+===================== -->
+<section class="trouble-section" id="trouble">
+  <h2>お悩み事はなんですか？</h2>
+  <p class="subtitle">当てはまるものをタップしてください</p>
+
+  <div class="trouble-grid">
+
+    <div class="trouble-card" onclick="openModal('kusakari')">
+      <!-- kusakari.jpg ： 草刈り作業のイメージ画像 -->
+      <div class="img-placeholder"></div>
+      <div class="label">🌿 草刈り・<br>庭の手入れ</div>
+    </div>
+
+    <div class="trouble-card" onclick="openModal('mizumawari')">
+      <!-- mizumawari.jpg ： 蛇口・シンクなど水回りのイメージ画像 -->
+      <div class="img-placeholder"></div>
+      <div class="label">💧 水回りの<br>トラブル</div>
+    </div>
+
+    <div class="trouble-card" onclick="openModal('souji')">
+      <!-- souji.jpg ： 部屋の掃除・ハウスクリーニングのイメージ画像 -->
+      <div class="img-placeholder"></div>
+      <div class="label">🧹 掃除・<br>片付け</div>
+    </div>
+
+    <div class="trouble-card" onclick="openModal('nimotsu')">
+      <!-- unpacking.jpg ： 荷物運びや引越しのイメージ画像 -->
+      <div class="img-placeholder"></div>
+      <div class="label">📦 荷物運び・<br>引越し</div>
+    </div>
+
+    <div class="trouble-card" onclick="openModal('kaimon')">
+      <!-- kaimon.jpg ： 買い物袋を持つ人のイメージ画像 -->
+      <div class="img-placeholder"></div>
+      <div class="label">🛒 買い物<br>代行</div>
+    </div>
+
+    <div class="trouble-card" onclick="openModal('sonota')">
+      <!-- sonota.jpg ： 何でもお任せのイメージ画像（スタッフ笑顔など） -->
+      <div class="img-placeholder"></div>
+      <div class="label">❓ その他の<br>お悩み</div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================
+     モーダル：草刈り
+===================== -->
+<div class="modal-overlay" id="modal-kusakari">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('kusakari')">✕</button>
+    <h3>🌿 草刈り・庭の手入れ</h3>
+
+    <label>広さはどのくらいですか？</label>
+    <select id="kusa-area">
+      <option value="10">小さめ（〜10坪）</option>
+      <option value="30">ふつう（10〜30坪）</option>
+      <option value="60">広め（30〜60坪）</option>
+      <option value="100">かなり広い（60坪以上）</option>
+    </select>
+
+    <label>草の種類・状態は？</label>
+    <select id="kusa-type">
+      <option value="1">やわらかい雑草（ふつう）</option>
+      <option value="1.3">背の高い草・笹</option>
+      <option value="1.6">竹・太い木の伐採あり</option>
+    </select>
+
+    <label>ご要望・気になることがあればどうぞ（任意）</label>
+    <textarea id="kusa-note" placeholder="例：池のそばに生えている草がある　など"></textarea>
+
+    <div class="estimate-result" id="kusa-result"></div>
+
+    <div class="modal-btn-row">
+      <button class="btn-estimate" onclick="estimateKusa()">見積もりを出す</button>
+      <a class="btn-call" href="tel:0857-XX-XXXX">📞 電話する</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- =====================
+     モーダル：水回り
+===================== -->
+<div class="modal-overlay" id="modal-mizumawari">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('mizumawari')">✕</button>
+    <h3>💧 水回りのトラブル</h3>
+
+    <label>どんなトラブルですか？</label>
+    <select id="mizu-type">
+      <option value="5000">蛇口・シャワーから水が漏れている</option>
+      <option value="8000">排水口が詰まっている</option>
+      <option value="10000">トイレが詰まっている</option>
+      <option value="12000">水道管・給湯器まわりが心配</option>
+    </select>
+
+    <label>場所はどこですか？</label>
+    <select id="mizu-place">
+      <option value="1">台所・キッチン</option>
+      <option value="1">洗面所・浴室</option>
+      <option value="1">トイレ</option>
+      <option value="1.2">屋外・庭</option>
+    </select>
+
+    <label>ご要望・状況を教えてください（任意）</label>
+    <textarea id="mizu-note" placeholder="例：昨日から少しずつ水が漏れている　など"></textarea>
+
+    <div class="estimate-result" id="mizu-result"></div>
+
+    <div class="modal-btn-row">
+      <button class="btn-estimate" onclick="estimateMizu()">見積もりを出す</button>
+      <a class="btn-call" href="tel:0857-XX-XXXX">📞 電話する</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- =====================
+     モーダル：掃除
+===================== -->
+<div class="modal-overlay" id="modal-souji">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('souji')">✕</button>
+    <h3>🧹 掃除・片付け</h3>
+
+    <label>どんな作業ですか？</label>
+    <select id="souji-type">
+      <option value="5000">部屋の掃除（1部屋）</option>
+      <option value="12000">部屋全体の大掃除</option>
+      <option value="20000">不用品の整理・片付け</option>
+      <option value="30000">遺品整理・ごみ屋敷の片付け</option>
+    </select>
+
+    <label>部屋の広さ（おおよそ）</label>
+    <select id="souji-size">
+      <option value="1">1LDK以下</option>
+      <option value="1.3">2〜3LDK</option>
+      <option value="1.8">4LDK以上・一軒家</option>
+    </select>
+
+    <label>ご要望（任意）</label>
+    <textarea id="souji-note" placeholder="例：エアコンの掃除もしてほしい　など"></textarea>
+
+    <div class="estimate-result" id="souji-result"></div>
+
+    <div class="modal-btn-row">
+      <button class="btn-estimate" onclick="estimateSouji()">見積もりを出す</button>
+      <a class="btn-call" href="tel:0857-XX-XXXX">📞 電話する</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- =====================
+     モーダル：荷物運び
+===================== -->
+<div class="modal-overlay" id="modal-nimotsu">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('nimotsu')">✕</button>
+    <h3>📦 荷物運び・引越し</h3>
+
+    <label>荷物の量はどのくらいですか？</label>
+    <select id="nimo-amount">
+      <option value="5000">少なめ（段ボール10箱以下）</option>
+      <option value="10000">ふつう（家具・家電あり）</option>
+      <option value="20000">多め（一軒家まるごと）</option>
+    </select>
+
+    <label>移動距離はどのくらいですか？</label>
+    <select id="nimo-dist">
+      <option value="1">近く（鳥取市内）</option>
+      <option value="1.3">やや遠い（県内）</option>
+      <option value="1.8">遠い（県外）</option>
+    </select>
+
+    <label>ご要望（任意）</label>
+    <textarea id="nimo-note" placeholder="例：大きなタンスがある　など"></textarea>
+
+    <div class="estimate-result" id="nimo-result"></div>
+
+    <div class="modal-btn-row">
+      <button class="btn-estimate" onclick="estimateNimo()">見積もりを出す</button>
+      <a class="btn-call" href="tel:0857-XX-XXXX">📞 電話する</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- =====================
+     モーダル：買い物代行
+===================== -->
+<div class="modal-overlay" id="modal-kaimon">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('kaimon')">✕</button>
+    <h3>🛒 買い物代行</h3>
+
+    <label>買い物の量はどのくらいですか？</label>
+    <select id="kai-amount">
+      <option value="2000">少なめ（日用品・食材のみ）</option>
+      <option value="3500">ふつう（スーパー1〜2袋分）</option>
+      <option value="5000">多め（まとめ買い）</option>
+    </select>
+
+    <label>どこへ行ってほしいですか？</label>
+    <input type="text" id="kai-shop" placeholder="例：近くのスーパー、ドラッグストア など" />
+
+    <label>ご要望（任意）</label>
+    <textarea id="kai-note" placeholder="例：特定のメーカーの品がほしい　など"></textarea>
+
+    <div class="estimate-result" id="kai-result"></div>
+
+    <div class="modal-btn-row">
+      <button class="btn-estimate" onclick="estimateKai()">見積もりを出す</button>
+      <a class="btn-call" href="tel:0857-XX-XXXX">📞 電話する</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- =====================
+     モーダル：その他
+===================== -->
+<div class="modal-overlay" id="modal-sonota">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('sonota')">✕</button>
+    <h3>❓ その他のお悩み</h3>
+
+    <label>どんなことでお困りですか？</label>
+    <textarea id="sonota-note" placeholder="例：雨どいが壊れた、ペットの世話を頼みたい、など何でもどうぞ" style="height:140px;"></textarea>
+
+    <div class="estimate-result" id="sonota-result" style="display:block; background:#FFF9C4; color:#555;">
+      内容を確認してからお電話・お見積もりします。<br>まずはお気軽にご連絡ください！
+    </div>
+
+    <div class="modal-btn-row">
+      <a class="btn-call" href="tel:0857-XX-XXXX" style="flex:1;">📞 電話する</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- =====================
+     実績セクション
+===================== -->
+<section class="jisseki-section" id="jisseki">
+  <h2>📋 実績紹介</h2>
+  <p class="subtitle">実際にお手伝いした内容をご紹介します</p>
+
+  <!-- ▼▼▼ 投稿フォーム ▼▼▼ -->
+  <div class="jisseki-post-form">
+    <h3>✏️ 実績を投稿する</h3>
+
+    <label>作業の種類</label>
+    <input type="text" id="post-title" placeholder="例：草刈り、水回り修理 など" />
+
+    <label>料金（円）</label>
+    <input type="number" id="post-price" placeholder="例：15000" />
+
+    <label>作業の説明（一言でOK）</label>
+    <textarea id="post-desc" placeholder="例：〇〇市の一軒家の庭、約30坪の草刈りを行いました。"></textarea>
+
+    <label>写真を選ぶ</label>
+    <input type="file" id="post-image" accept="image/*" />
+
+    <button class="btn-post" onclick="postJisseki()">📤 投稿する</button>
+  </div>
+  <!-- ▲▲▲ 投稿フォームここまで ▲▲▲ -->
+
+  <!-- 実績カード一覧 -->
+  <div class="jisseki-grid" id="jisseki-grid">
+
+    <!-- サンプル実績1 -->
+    <div class="jisseki-card">
+      <!-- jisseki1.jpg ： 草刈り作業の写真（作業前後など） -->
+      <div class="jisseki-img-placeholder"></div>
+      <div class="card-body">
+        <div class="card-title">🌿 草刈り</div>
+        <div class="card-price">¥15,000</div>
+        <div class="card-desc">〇〇市の一軒家の庭、約30坪の草刈りを行いました。</div>
+        <div class="card-date">2025年10月</div>
+      </div>
+    </div>
+
+    <!-- サンプル実績2 -->
+    <div class="jisseki-card">
+      <!-- jisseki2.jpg ： 水回り修理作業の写真 -->
+      <div class="jisseki-img-placeholder"></div>
+      <div class="card-body">
+        <div class="card-title">💧 水回り修理</div>
+        <div class="card-price">¥8,000</div>
+        <div class="card-desc">台所の蛇口からの水漏れを修理しました。</div>
+        <div class="card-date">2025年9月</div>
+      </div>
+    </div>
+
+    <!-- サンプル実績3 -->
+    <div class="jisseki-card">
+      <!-- jisseki3.jpg ： 大掃除・片付け作業の写真 -->
+      <div class="jisseki-img-placeholder"></div>
+      <div class="card-body">
+        <div class="card-title">🧹 大掃除・片付け</div>
+        <div class="card-price">¥20,000</div>
+        <div class="card-desc">2LDKのお部屋全体の大掃除と不用品整理を行いました。</div>
+        <div class="card-date">2025年8月</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================
+     フッター
+===================== -->
+<footer>
+  <a href="tel:0857-XX-XXXX" class="footer-tel">0857-XX-XXXX</a>
+  <p>受付時間：9:00〜18:00（年中無休）</p>
+  <p style="margin-top:12px;">© 2025 鳥取便利屋. All rights reserved.</p>
+</footer>
+
+
+<!-- =====================
+     JavaScript
+===================== -->
+<script>
+  // ── モーダル開閉 ──
+  function openModal(type) {
+    document.getElementById('modal-' + type).classList.add('active');
+  }
+  function closeModal(type) {
+    document.getElementById('modal-' + type).classList.remove('active');
+  }
+  // オーバーレイクリックで閉じる
+  document.querySelectorAll('.modal-overlay').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      if (e.target === el) el.classList.remove('active');
+    });
+  });
+
+  // ── 見積もり計算：草刈り ──
+  function estimateKusa() {
+    var area = parseFloat(document.getElementById('kusa-area').value);
+    var type = parseFloat(document.getElementById('kusa-type').value);
+    var base = 3000;
+    var price = Math.round((base + area * 200) * type);
+    var result = document.getElementById('kusa-result');
+    result.style.display = 'block';
+    result.innerHTML = '概算見積もり：<strong>¥' + price.toLocaleString() + ' 〜</strong><br><small>※実際の現地確認後に正式なお見積もりをご提案します</small>';
+  }
+
+  // ── 見積もり計算：水回り ──
+  function estimateMizu() {
+    var base = parseFloat(document.getElementById('mizu-type').value);
+    var place = parseFloat(document.getElementById('mizu-place').value);
+    var price = Math.round(base * place);
+    var result = document.getElementById('mizu-result');
+    result.style.display = 'block';
+    result.innerHTML = '概算見積もり：<strong>¥' + price.toLocaleString() + ' 〜</strong><br><small>※実際の現地確認後に正式なお見積もりをご提案します</small>';
+  }
+
+  // ── 見積もり計算：掃除 ──
+  function estimateSouji() {
+    var base = parseFloat(document.getElementById('souji-type').value);
+    var size = parseFloat(document.getElementById('souji-size').value);
+    var price = Math.round(base * size);
+    var result = document.getElementById('souji-result');
+    result.style.display = 'block';
+    result.innerHTML = '概算見積もり：<strong>¥' + price.toLocaleString() + ' 〜</strong><br><small>※実際の現地確認後に正式なお見積もりをご提案します</small>';
+  }
+
+  // ── 見積もり計算：荷物運び ──
+  function estimateNimo() {
+    var base = parseFloat(document.getElementById('nimo-amount').value);
+    var dist = parseFloat(document.getElementById('nimo-dist').value);
+    var price = Math.round(base * dist);
+    var result = document.getElementById('nimo-result');
+    result.style.display = 'block';
+    result.innerHTML = '概算見積もり：<strong>¥' + price.toLocaleString() + ' 〜</strong><br><small>※実際の現地確認後に正式なお見積もりをご提案します</small>';
+  }
+
+  // ── 見積もり計算：買い物代行 ──
+  function estimateKai() {
+    var price = parseFloat(document.getElementById('kai-amount').value);
+    var result = document.getElementById('kai-result');
+    result.style.display = 'block';
+    result.innerHTML = '概算見積もり：<strong>¥' + price.toLocaleString() + ' 〜</strong><br><small>※交通費・購入費は別途かかります</small>';
+  }
+
+  // ── 実績投稿 ──
+  function postJisseki() {
+    var title = document.getElementById('post-title').value.trim();
+    var price = document.getElementById('post-price').value.trim();
+    var desc  = document.getElementById('post-desc').value.trim();
+    var imgFile = document.getElementById('post-image').files[0];
+
+    if (!title || !price) {
+      alert('「作業の種類」と「料金」は必ず入力してください');
+      return;
+    }
+
+    var now = new Date();
+    var dateStr = now.getFullYear() + '年' + (now.getMonth()+1) + '月';
+
+    var card = document.createElement('div');
+    card.className = 'jisseki-card';
+
+    var imgHTML = '';
+    if (imgFile) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = card.querySelector('.jisseki-img-placeholder');
+        var realImg = document.createElement('img');
+        realImg.src = e.target.result;
+        realImg.style.width = '100%';
+        realImg.style.height = '200px';
+        realImg.style.objectFit = 'cover';
+        img.replaceWith(realImg);
+      };
+      reader.readAsDataURL(imgFile);
+    }
+
+    card.innerHTML =
+      '<div class="jisseki-img-placeholder"></div>' +
+      '<div class="card-body">' +
+        '<div class="card-title">' + title + '</div>' +
+        '<div class="card-price">¥' + parseInt(price).toLocaleString() + '</div>' +
+        '<div class="card-desc">' + (desc || '') + '</div>' +
+        '<div class="card-date">' + dateStr + '</div>' +
+      '</div>';
+
+    // 画像読み込みを再トリガー
+    if (imgFile) {
+      var reader2 = new FileReader();
+      reader2.onload = function(e) {
+        var placeholder = card.querySelector('.jisseki-img-placeholder');
+        if (placeholder) {
+          var realImg = document.createElement('img');
+          realImg.src = e.target.result;
+          realImg.style.width = '100%';
+          realImg.style.height = '200px';
+          realImg.style.objectFit = 'cover';
+          placeholder.replaceWith(realImg);
+        }
+      };
+      reader2.readAsDataURL(imgFile);
+    }
+
+    var grid = document.getElementById('jisseki-grid');
+    grid.insertBefore(card, grid.firstChild);
+
+    // フォームリセット
+    document.getElementById('post-title').value = '';
+    document.getElementById('post-price').value = '';
+    document.getElementById('post-desc').value = '';
+    document.getElementById('post-image').value = '';
+
+    alert('✅ 実績を投稿しました！');
+  }
+</script>
+
+</body>
+</html>
